@@ -1,10 +1,17 @@
 package main
 
 import (
-	"log"
-	"net/http"
+	"MyNote/internal"
 )
 
 func main() {
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	router := internal.GetRouter()
+	// r := gin.Default()
+	// r.GET("/ping", func(c *gin.Context) {
+	// c.JSON(http.StatusOK, gin.H{
+	// "message": "pong",
+	// })
+	// })
+	router.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+
 }
