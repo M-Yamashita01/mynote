@@ -9,6 +9,7 @@ func GetRouter() *gin.Engine {
 	r.LoadHTMLGlob("web/*.html")
 
 	// r.GET("/", ShowList())
+	r.GET("/signin", ShowSignInPage())
 	r.GET("/login", ShowLoginPage())
 
 	return r
