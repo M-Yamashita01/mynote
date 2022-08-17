@@ -10,6 +10,7 @@ func GetRouter() *gin.Engine {
 
 	// r.GET("/", ShowList())
 	r.GET("/signin", ShowSignInPage())
+	r.POST("/signin", SignIn)
 	r.GET("/login", ShowLoginPage())
 
 	return r

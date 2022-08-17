@@ -6,6 +6,6 @@ import (
 
 type PasswordAuthentication struct {
 	gorm.Model
-	encrypted_password string
-	UserId             int
+	EncryptedPassword string
+	UserId            int
 }

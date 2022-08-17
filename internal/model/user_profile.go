@@ -6,8 +6,8 @@ import (
 
 type UserProfile struct {
 	gorm.Model
-	firstName string
-	lastName  string
-	email     string
+	FirstName string
+	LastName  string
+	Email     string
 	UserId    int
 }
