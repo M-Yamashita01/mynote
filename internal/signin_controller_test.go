@@ -1,7 +1,6 @@
 package internal_test
 
 import (
-	"database/sql"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -10,9 +9,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	. "github.com/onsi/ginkgo/v2"
+	"gorm.io/gorm"
 
 	. "github.com/onsi/gomega"
-	"gorm.io/gorm"
 
 	"MyNote/internal"
 	"MyNote/internal/model"
@@ -22,7 +21,6 @@ import (
 var _ = Describe("SignInController", func() {
 	var currentdb string
 	var db *gorm.DB
-	var sqlDb *sql.DB
 
 	BeforeEach(func() {
 		testdb := "mynote_test_db"
@@ -30,7 +28,6 @@ var _ = Describe("SignInController", func() {
 		os.Setenv("MYSQL_ROOT_PASSWORD", "password")
 		os.Setenv("MYSQL_DATABASE", testdb)
 		db, _ = database.DbInit()
-		sqlDb, _ = db.DB()
 
 		db.AutoMigrate(&(model.User{}))
 		db.AutoMigrate(&(model.UserProfile{}))
@@ -38,11 +35,12 @@ var _ = Describe("SignInController", func() {
 	})
 
 	AfterEach(func() {
-		sqlDb.Exec("SET FOREIGN_KEY_CHECKS = 0;")
-		sqlDb.Exec("TRUNCATE user_profiles;")
-		sqlDb.Exec("TRUNCATE password_authentications;")
-		sqlDb.Exec("TRUNCATE users;")
-		sqlDb.Exec("SET FOREIGN_KEY_CHECKS = 1;")
+		db.Exec("SET FOREIGN_KEY_CHECKS = 0;")
+		db.Exec("TRUNCATE user_profiles;")
+		db.Exec("TRUNCATE password_authentications;")
+		db.Exec("TRUNCATE users;")
+		db.Exec("SET FOREIGN_KEY_CHECKS = 1;")
+		sqlDb, _ := db.DB()
 		sqlDb.Close()
 		os.Setenv("MYSQL_DATABASE", currentdb)
 	})
