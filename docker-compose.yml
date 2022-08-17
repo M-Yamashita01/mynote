@@ -2,8 +2,15 @@ version: "3.9"
 services:
   mynote:
     build: .
+    environment:
+    - MYSQL_DATABASE=mynote_db
+    - MYSQL_ROOT_PASSWORD=password
+    - MYSQL_HOST=db
     ports:
       - 8080:8080
+    depends_on:
+      db:
+        condition: service_healthy
     volumes:
       - .:/app
   db:
@@ -11,6 +18,13 @@ services:
     environment:
     - MYSQL_DATABASE=mynote_db
     - MYSQL_ROOT_PASSWORD=password
+    healthcheck:
+      test: "mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD"
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
     ports:
       - 3306:3306
     volumes:
