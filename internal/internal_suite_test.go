@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestDatabase(t *testing.T) {
+func TestInternal(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Database Suite")
+	RunSpecs(t, "Internal Suite")
 }
