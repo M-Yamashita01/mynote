@@ -41,3 +41,18 @@ func CreateUserProfile(firstName string, lastName string, email string, userId u
 
 	return &userProfile, nil
 }
+
+func ExistUserWithEmail(email string) bool {
+	db, err := database.DbInit()
+	if err != nil {
+		log.Println("Failed db connection.")
+		log.Println(err)
+		return false
+	}
+
+	if (int(db.Where("email = ?", email).Take(&UserProfile{}).RowsAffected) == 0) {
+		return false
+	}
+
+	return true
+}

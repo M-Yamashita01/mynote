@@ -12,7 +12,7 @@ import (
 
 func DbInit() (*gorm.DB, error) {
 	password := myNoteOs.GetEnv("MYSQL_ROOT_PASSWORD", "password")
-	mysqlDb := myNoteOs.GetEnv("MYSQL_DATABASE", "mynote")
+	mysqlDb := myNoteOs.GetEnv("MYSQL_DATABASE", "mynote_db")
 	host := myNoteOs.GetEnv("MYSQL_HOST", "127.0.0.1")
 	port := myNoteOs.GetEnv("MYSQL_PORT", "3306")
 

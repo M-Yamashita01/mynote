@@ -53,11 +53,12 @@ var _ = Describe("SignInController", func() {
 		form.Add("password", "ExamplePassword")
 		body := strings.NewReader(form.Encode())
 
-		testContext, _ := gin.CreateTestContext(httptest.NewRecorder())
+		responseWriter := httptest.NewRecorder()
+		testContext, _ := gin.CreateTestContext(responseWriter)
 		testContext.Request, _ = http.NewRequest("POST", "/signin", body)
 		testContext.Request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
-		It("Create user profile successfully", func() {
+		It("Create user profile successfully.", func() {
 			internal.SignIn(testContext)
 
 			var userProfile model.UserProfile
@@ -68,7 +69,7 @@ var _ = Describe("SignInController", func() {
 			Expect(userProfile.Email).To(Equal("example@example.com"))
 		})
 
-		It("Create password authentication successfully", func() {
+		It("Create password authentication successfully.", func() {
 			internal.SignIn(testContext)
 
 			var passwordAuthentication model.PasswordAuthentication
@@ -77,5 +78,17 @@ var _ = Describe("SignInController", func() {
 			Expect(passwordAuthentication.Model.ID).NotTo(BeNil())
 			Expect(passwordAuthentication.EncryptedPassword).NotTo(BeNil())
 		})
+
+		Context("user with email exist already", func() {
+			user, _ := model.CreateUser()
+			userId := user.Model.ID
+			model.CreateUserProfile("test_first_name", "test_last_name", "example@example.com", userId)
+			It("Not create user profile.", func() {
+				internal.SignIn(testContext)
+
+				Expect(1).To(Equal(int(db.Take(&model.UserProfile{}).RowsAffected)))
+			})
+		})
 	})
+
 })
