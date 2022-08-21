@@ -15,7 +15,7 @@ jobs:
           - 3306:3306
         env:
           MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: mynote_db
+          MYSQL_DATABASE: mynote_test_db
     name: Ginkgo
     steps:
     - uses: actions/checkout@v3
@@ -29,6 +29,6 @@ jobs:
     - name: Set environment variables
       run: |
         echo "MYSQL_ROOT_PASSWORD=password" >> $GITHUB_ENV
-        echo "MYSQL_DATABASE=mynote_db" >> $GITHUB_ENV
+        echo "MYSQL_DATABASE=mynote_test_db" >> $GITHUB_ENV
     - name: Run test
       run: ginkgo -r --randomize-all --randomize-suites
