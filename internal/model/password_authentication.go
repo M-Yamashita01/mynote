@@ -39,3 +39,21 @@ func CreatePasswordAuthentication(password string, userId uint) (*PasswordAuthen
 
 	return &passwordAuthentication, nil
 }
+
+func CorrectPassword(password string, userId int) bool {
+	db, err := database.DbInit()
+	if err != nil {
+		log.Println("Failed db connection.")
+		log.Println(err)
+		return false
+	}
+
+	defer database.Close(db)
+
+	passwordAuthentication := PasswordAuthentication{}
+	if err := db.Where("user_id = ?", userId).First(&passwordAuthentication).Error; err != nil {
+		return false
+	}
+
+	return crypto.CompareHashAndPassword(passwordAuthentication.EncryptedPassword, password)
+}
