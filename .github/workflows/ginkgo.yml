@@ -1,0 +1,32 @@
+name: Ginkgo
+
+on: pull_request
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: mysql:5.7
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: mynote_db
+    name: Ginkgo
+    steps:
+    - uses: actions/setup-go@v3
+      with:
+        go-version-file: go.mod
+    - uses: actions/checkout@v3
+    - name: Install Tools
+      run: go get github.com/onsi/ginkgo/ginkgo github.com/onsi/gomega/...
+    - name: Set environment variables
+      run: |
+        echo "MYSQL_ROOT_PASSWORD=password" >> $GITHUB_ENV
+        echo "MYSQL_DATABASE=mynote_db" >> $GITHUB_ENV
+    - name: run test
+      run: ginkgo -r --randomize-all --randomize-suites
