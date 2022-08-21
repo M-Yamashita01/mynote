@@ -18,10 +18,10 @@ jobs:
           MYSQL_DATABASE: mynote_db
     name: Ginkgo
     steps:
+    - uses: actions/checkout@v3
     - uses: actions/setup-go@v3
       with:
         go-version-file: go.mod
-    - uses: actions/checkout@v3
     - name: Install Tools
       run: go get github.com/onsi/ginkgo/ginkgo github.com/onsi/gomega/...
     - name: Set environment variables
