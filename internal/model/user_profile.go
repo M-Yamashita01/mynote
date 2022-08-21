@@ -56,3 +56,21 @@ func ExistUserWithEmail(email string) bool {
 
 	return true
 }
+
+func FindUserProfile(email string) (*UserProfile, error) {
+	db, err := database.DbInit()
+	if err != nil {
+		log.Println("Failed db connection.")
+		log.Println(err)
+		return &UserProfile{}, err
+	}
+
+	defer database.Close(db)
+
+	userProfile := UserProfile{}
+	if err := db.Where("email = ?", email).First(&userProfile).Error; err != nil {
+		return nil, err
+	}
+
+	return &userProfile, nil
+}

@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"MyNote/internal/model"
-	"MyNote/model"
 )
 
 func ShowLoginPage() func(c *gin.Context) {
@@ -17,9 +16,16 @@ func ShowLoginPage() func(c *gin.Context) {
 
 func PostLogin(c *gin.Context) {
 	email := c.PostForm("email")
-	// password := c.PostForm("psw")
+	password := c.PostForm("password")
 
-	if !model.ExistUserWithEmail(email) {
+	userProfile, err := model.FindUserProfile(email)
+	if err != nil {
+		c.HTML(http.StatusBadRequest, "login.html", gin.H{"err": "Email or password is incorrect."})
+		return
+	}
+
+	userId := userProfile.Model.ID
+	if !model.CorrectPassword(password, int(userId)) {
 		c.HTML(http.StatusBadRequest, "login.html", gin.H{"err": "Email or password is incorrect."})
 		return
 	}
