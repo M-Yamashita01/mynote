@@ -1,4 +1,4 @@
-package internal_test
+package controller_test
 
 import (
 	"net/http"
@@ -13,7 +13,7 @@ import (
 
 	. "github.com/onsi/gomega"
 
-	"MyNote/internal"
+	"MyNote/internal/controller"
 	"MyNote/internal/model"
 	"MyNote/pkg/database"
 )
@@ -59,7 +59,7 @@ var _ = Describe("SignInController", func() {
 		testContext.Request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 		It("Create user profile successfully.", func() {
-			internal.SignIn(testContext)
+			controller.SignIn(testContext)
 
 			var userProfile model.UserProfile
 			db.First(&userProfile)
@@ -70,7 +70,7 @@ var _ = Describe("SignInController", func() {
 		})
 
 		It("Create password authentication successfully.", func() {
-			internal.SignIn(testContext)
+			controller.SignIn(testContext)
 
 			var passwordAuthentication model.PasswordAuthentication
 			db.First(&passwordAuthentication)
@@ -84,7 +84,7 @@ var _ = Describe("SignInController", func() {
 			userId := user.Model.ID
 			model.CreateUserProfile("test_first_name", "test_last_name", "example@example.com", userId)
 			It("Not create user profile.", func() {
-				internal.SignIn(testContext)
+				controller.SignIn(testContext)
 
 				Expect(1).To(Equal(int(db.Take(&model.UserProfile{}).RowsAffected)))
 			})

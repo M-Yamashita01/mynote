@@ -2,6 +2,8 @@ package internal
 
 import (
 	"github.com/gin-gonic/gin"
+
+	"MyNote/internal/controller"
 )
 
 func GetRouter() *gin.Engine {
@@ -9,10 +11,10 @@ func GetRouter() *gin.Engine {
 	r.LoadHTMLGlob("web/*.html")
 
 	// r.GET("/", ShowList())
-	r.GET("/signin", ShowSignInPage())
-	r.POST("/signin", SignIn)
-	r.GET("/login", ShowLoginPage())
-	r.POST("/login", PostLogin)
+	r.GET("/signin", controller.ShowSignInPage())
+	r.POST("/signin", controller.SignIn)
+	r.GET("/login", controller.ShowLoginPage())
+	r.POST("/login", controller.PostLogin)
 
 	return r
 }

@@ -1,4 +1,4 @@
-package internal_test
+package controller_test
 
 import (
 	"database/sql"
@@ -13,7 +13,7 @@ import (
 	. "github.com/onsi/gomega"
 	"gorm.io/gorm"
 
-	"MyNote/internal"
+	"MyNote/internal/controller"
 	"MyNote/internal/model"
 	"MyNote/pkg/database"
 )
@@ -45,7 +45,7 @@ var _ = Describe("LoginController", Ordered, func() {
 	})
 
 	It("Show LogInPage successfully", func() {
-		internal.ShowLoginPage()
+		controller.ShowLoginPage()
 	})
 
 	Describe("PostLogIn", Ordered, func() {
@@ -68,7 +68,7 @@ var _ = Describe("LoginController", Ordered, func() {
 			testContext.Request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 			It("Login successfully", func() {
-				internal.PostLogin(testContext)
+				controller.PostLogin(testContext)
 				Expect(testContext.Writer.Status()).To(Equal(http.StatusFound))
 			})
 		})
