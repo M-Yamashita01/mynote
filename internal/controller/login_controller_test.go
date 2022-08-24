@@ -1,51 +1,35 @@
-package internal_test
+package controller_test
 
 import (
-	"database/sql"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
-	"os"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"gorm.io/gorm"
 
-	"MyNote/internal"
+	"MyNote/internal/controller"
 	"MyNote/internal/model"
-	"MyNote/pkg/database"
+	"MyNote/pkg/database/database_test"
 )
 
 // "MyNote/pkg/database"
 
 var _ = Describe("LoginController", Ordered, func() {
-	var currentdb string
-	var db *gorm.DB
-	var sqlDb *sql.DB
+	var db *database_test.DB
 
 	BeforeAll(func() {
-		testdb := "mynote_test_db"
-		currentdb = "mynote_db"
-		os.Setenv("MYSQL_ROOT_PASSWORD", "password")
-		os.Setenv("MYSQL_DATABASE", testdb)
-		db, _ = database.DbInit()
-		sqlDb, _ = db.DB()
+		db = database_test.ConnectTestDb()
 
 		DeferCleanup(func() {
-			db.Exec("SET FOREIGN_KEY_CHECKS = 0;")
-			db.Exec("TRUNCATE user_profiles;")
-			db.Exec("TRUNCATE password_authentications;")
-			db.Exec("TRUNCATE users;")
-			db.Exec("SET FOREIGN_KEY_CHECKS = 1;")
-			sqlDb.Close()
-			os.Setenv("MYSQL_DATABASE", currentdb)
+			db.CloseTestDb()
 		})
 	})
 
 	It("Show LogInPage successfully", func() {
-		internal.ShowLoginPage()
+		controller.ShowLoginPage()
 	})
 
 	Describe("PostLogIn", Ordered, func() {
@@ -68,7 +52,7 @@ var _ = Describe("LoginController", Ordered, func() {
 			testContext.Request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 			It("Login successfully", func() {
-				internal.PostLogin(testContext)
+				controller.PostLogin(testContext)
 				Expect(testContext.Writer.Status()).To(Equal(http.StatusFound))
 			})
 		})
