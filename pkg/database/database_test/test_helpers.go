@@ -5,6 +5,7 @@ import (
 
 	"gorm.io/gorm"
 
+	"MyNote/internal/model"
 	"MyNote/pkg/database"
 )
 
@@ -24,7 +25,15 @@ func ConnectTestDb() *DB {
 
 	db.GormDb, _ = database.DbInit()
 
+	db.migrate()
+
 	return &db
+}
+
+func (db *DB) migrate() {
+	db.GormDb.AutoMigrate(&(model.User{}))
+	db.GormDb.AutoMigrate(&(model.UserProfile{}))
+	db.GormDb.AutoMigrate(&(model.PasswordAuthentication{}))
 }
 
 func (db *DB) CloseTestDb() {
