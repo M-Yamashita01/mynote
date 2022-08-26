@@ -49,8 +49,31 @@ img.avatar {
 }
 
 /* Add padding to containers */
-.container {
+.login_container {
   padding: 16px;
+}
+
+.signin_container {
+  padding: 16px;
+}
+
+.home_container {
+  width: 90%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+}
+
+.main-contents {
+  width: 70%;
+  padding: 10px;
+  background-color: #ccc;
+}
+
+.left-menu {
+  width: 10%;
+  padding: 10px;
+  background-color: #faa;
 }
 
 /* The "Forgot password" text */
