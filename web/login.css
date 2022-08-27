@@ -65,13 +65,14 @@ img.avatar {
 }
 
 .main-contents {
-  width: 70%;
+  width: 55%;
   padding: 10px;
   background-color: #ccc;
 }
 
-.left-menu {
-  width: 10%;
+.left-menu,
+.right-menu {
+  width: 15%;
   padding: 10px;
   background-color: #faa;
 }
