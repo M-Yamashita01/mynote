@@ -1,23 +1,13 @@
 name: ci
 
-on:
-  push:
-    branches:
-      - main
-      - master
-  pull_request:
-    branches:
-      - main
-      - master
+on: pull_request
+
+permissions:
+  contents: read
 
 jobs:
-  ci:
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        node: [14]
+  jest:
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout 🛎
@@ -26,7 +16,7 @@ jobs:
       - name: Setup node env 🏗
         uses: actions/setup-node@v2.1.5
         with:
-          node-version: ${{ matrix.node }}
+          node-version: 14.x
           check-latest: true
 
       - name: Cache node_modules 📦
@@ -39,7 +29,8 @@ jobs:
 
       - name: Install dependencies 👨🏻‍💻
         run: npm ci --prefer-offline --no-audit
-
+        working-directory: ./mynote-frontend
 
       - name: Run tests 🧪
         run: npm run test
+        working-directory: ./mynote-frontend
