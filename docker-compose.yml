@@ -1,5 +1,15 @@
 version: "3.9"
 services:
+
+  frontend:
+    build: ./mynote-frontend
+    ports:
+      - 3000:3000
+    depends_on:
+      - backend
+    volumes:
+      - ./mynote-frontend/:/app
+
   backend:
     build: ./mynote-backend
     environment:
