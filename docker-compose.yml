@@ -1,7 +1,17 @@
 version: "3.9"
 services:
-  mynote:
-    build: .
+
+  frontend:
+    build: ./mynote-frontend
+    ports:
+      - 3000:3000
+    depends_on:
+      - backend
+    volumes:
+      - ./mynote-frontend/:/app
+
+  backend:
+    build: ./mynote-backend
     environment:
     - MYSQL_DATABASE=mynote_db
     - MYSQL_ROOT_PASSWORD=password
@@ -12,7 +22,7 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - .:/app
+      - ./mynote-backend/:/app
   db:
     image: mysql:5.7
     environment:
