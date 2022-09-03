@@ -37,14 +37,18 @@ func (db *DB) migrate() {
 }
 
 func (db *DB) CloseTestDb() {
-	db.GormDb.Exec("SET FOREIGN_KEY_CHECKS = 0;")
-	db.GormDb.Exec("TRUNCATE user_profiles;")
-	db.GormDb.Exec("TRUNCATE password_authentications;")
-	db.GormDb.Exec("TRUNCATE users;")
-	db.GormDb.Exec("SET FOREIGN_KEY_CHECKS = 1;")
+	db.TruncateAllTable()
 
 	sqlDb, _ := db.GormDb.DB()
 	sqlDb.Close()
 
 	os.Setenv("MYSQL_DATABASE", db.currentDb)
+}
+
+func (db *DB) TruncateAllTable() {
+	db.GormDb.Exec("SET FOREIGN_KEY_CHECKS = 0;")
+	db.GormDb.Exec("TRUNCATE user_profiles;")
+	db.GormDb.Exec("TRUNCATE password_authentications;")
+	db.GormDb.Exec("TRUNCATE users;")
+	db.GormDb.Exec("SET FOREIGN_KEY_CHECKS = 1;")
 }

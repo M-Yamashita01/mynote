@@ -14,35 +14,35 @@ func ShowSignInPage() func(c *gin.Context) {
 	}
 }
 
-func SignIn(c *gin.Context) {
+func PostSignIn(c *gin.Context) {
 	firstName := c.PostForm("firstName")
 	lastName := c.PostForm("lastName")
 	email := c.PostForm("email")
 	password := c.PostForm("password")
 
 	if existsUser(email) {
-		c.HTML(http.StatusBadRequest, "signin.html", gin.H{"err": "Already exists user with the email."})
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Sign in failed."})
 		return
 	}
 
 	user, err := model.CreateUser()
 	if err != nil {
-		c.HTML(http.StatusInternalServerError, "signin.html", gin.H{"err": "Could not create account."})
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Sign in failed."})
 		return
 	}
 
 	userId := user.Model.ID
 	if _, err := model.CreateUserProfile(firstName, lastName, email, userId); err != nil {
-		c.HTML(http.StatusInternalServerError, "signin.html", gin.H{"err": "Could not create account."})
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Sign in failed."})
 		return
 	}
 
 	if _, err := model.CreatePasswordAuthentication(password, userId); err != nil {
-		c.HTML(http.StatusInternalServerError, "signin.html", gin.H{"err": "Could not create account."})
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Sign in failed."})
 		return
 	}
 
-	c.Redirect(http.StatusMovedPermanently, "/")
+	c.JSON(http.StatusOK, gin.H{"message": "Sign in success."})
 }
 
 func existsUser(email string) bool {
