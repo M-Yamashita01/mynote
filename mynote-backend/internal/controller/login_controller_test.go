@@ -36,14 +36,14 @@ var _ = Describe("LoginController", Ordered, func() {
 		BeforeEach(func() {
 			user, _ := model.CreateUser()
 			userId := user.Model.ID
-			model.CreateUserProfile("test_first_name", "test_last_name", "example@example.com", userId)
-			model.CreatePasswordAuthentication("ExamplePassword", userId)
+			model.CreateUserProfile("test_first_name", "test_last_name", "correct@example.com", userId)
+			model.CreatePasswordAuthentication("CorrectPassword", userId)
 		})
 
 		Context("Input correct email and password", func() {
 			form := url.Values{}
-			form.Add("email", "example@example.com")
-			form.Add("password", "ExamplePassword")
+			form.Add("email", "correct@example.com")
+			form.Add("password", "CorrectPassword")
 			body := strings.NewReader(form.Encode())
 
 			responseWriter := httptest.NewRecorder()
@@ -53,7 +53,41 @@ var _ = Describe("LoginController", Ordered, func() {
 
 			It("Login successfully", func() {
 				controller.PostLogin(testContext)
-				Expect(testContext.Writer.Status()).To(Equal(http.StatusFound))
+				Expect(testContext.Writer.Status()).To(Equal(http.StatusOK))
+			})
+		})
+
+		Context("Input incorrect email", func() {
+			form := url.Values{}
+			form.Add("email", "incorrect@example.com")
+			form.Add("password", "CorrectPassword")
+			body := strings.NewReader(form.Encode())
+
+			responseWriter := httptest.NewRecorder()
+			testContext, _ := gin.CreateTestContext(responseWriter)
+			testContext.Request, _ = http.NewRequest("POST", "/login", body)
+			testContext.Request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+			It("Login failed", func() {
+				controller.PostLogin(testContext)
+				Expect(testContext.Writer.Status()).To(Equal(http.StatusUnauthorized))
+			})
+		})
+
+		Context("Input incorrect password", func() {
+			form := url.Values{}
+			form.Add("email", "correct@example.com")
+			form.Add("password", "IncorrectPassword")
+			body := strings.NewReader(form.Encode())
+
+			responseWriter := httptest.NewRecorder()
+			testContext, _ := gin.CreateTestContext(responseWriter)
+			testContext.Request, _ = http.NewRequest("POST", "/login", body)
+			testContext.Request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+			It("Login failed", func() {
+				controller.PostLogin(testContext)
+				Expect(testContext.Writer.Status()).To(Equal(http.StatusUnauthorized))
 			})
 		})
 	})
