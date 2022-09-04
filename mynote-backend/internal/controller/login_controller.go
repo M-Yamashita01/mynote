@@ -20,15 +20,15 @@ func PostLogin(c *gin.Context) {
 
 	userProfile, err := model.FindUserProfile(email)
 	if err != nil {
-		c.HTML(http.StatusBadRequest, "login.html", gin.H{"err": "Email or password is incorrect."})
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Login failed."})
 		return
 	}
 
 	userId := userProfile.Model.ID
 	if !model.CorrectPassword(password, int(userId)) {
-		c.HTML(http.StatusBadRequest, "login.html", gin.H{"err": "Email or password is incorrect."})
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Login failed."})
 		return
 	}
 
-	c.Redirect(http.StatusFound, "/")
+	c.JSON(http.StatusOK, gin.H{"message": "Login success."})
 }
