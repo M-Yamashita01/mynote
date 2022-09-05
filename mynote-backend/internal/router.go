@@ -40,6 +40,7 @@ func GetRouter() *gin.Engine {
 	r.POST("/api/auth/signin", controller.PostSignIn)
 	r.GET("/login", controller.ShowLoginPage())
 	r.POST("/api/auth/login", controller.PostLogin)
+	r.GET("/api/auth/user", controller.GetUser)
 
 	return r
 }
