@@ -35,5 +35,11 @@ func PostLogin(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Login success."})
+	userToken, err := model.FindUserToken(int(userId))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Login failed."})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"token": userToken.Token})
 }
