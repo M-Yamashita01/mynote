@@ -1,10 +1,9 @@
 package controller_test
 
 import (
+	"bytes"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	. "github.com/onsi/ginkgo/v2"
@@ -31,17 +30,14 @@ var _ = Describe("SignInController", Ordered, func() {
 		var testContext *gin.Context
 
 		BeforeEach(func() {
-			form := url.Values{}
-			form.Add("firstName", "test_first_name")
-			form.Add("lastName", "test_last_name")
-			form.Add("email", "example@example.com")
-			form.Add("password", "ExamplePassword")
-			body := strings.NewReader(form.Encode())
+			body := bytes.NewBufferString(
+				"{\"firstName\":\"test_first_name\",\"lastName\":\"test_last_name\",\"email\": \"example@example.com\", \"password\": \"ExamplePassword\"}",
+			)
 
 			responseWriter := httptest.NewRecorder()
 			testContext, _ = gin.CreateTestContext(responseWriter)
-			testContext.Request, _ = http.NewRequest("POST", "/signin", body)
-			testContext.Request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+			testContext.Request, _ = http.NewRequest("POST", "/api/auth/signin", body)
+			testContext.Request.Header.Set("Content-Type", gin.MIMEJSON)
 		})
 
 		AfterEach(func() {
@@ -84,17 +80,14 @@ var _ = Describe("SignInController", Ordered, func() {
 			userId := user.Model.ID
 			model.CreateUserProfile("test_first_name", "test_last_name", "example@example.com", userId)
 
-			form := url.Values{}
-			form.Add("firstName", "test_first_name")
-			form.Add("lastName", "test_last_name")
-			form.Add("email", "example@example.com")
-			form.Add("password", "ExamplePassword")
-			body := strings.NewReader(form.Encode())
+			body := bytes.NewBufferString(
+				"{\"firstName\":\"test_first_name\",\"lastName\":\"test_last_name\",\"email\": \"example@example.com\", \"password\": \"ExamplePassword\"}",
+			)
 
 			responseWriter := httptest.NewRecorder()
 			testContext, _ = gin.CreateTestContext(responseWriter)
-			testContext.Request, _ = http.NewRequest("POST", "/signin", body)
-			testContext.Request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+			testContext.Request, _ = http.NewRequest("POST", "/api/auth/signin", body)
+			testContext.Request.Header.Set("Content-Type", gin.MIMEJSON)
 		})
 
 		AfterEach(func() {

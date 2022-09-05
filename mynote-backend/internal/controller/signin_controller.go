@@ -14,13 +14,18 @@ func ShowSignInPage() func(c *gin.Context) {
 	}
 }
 
-func PostSignIn(c *gin.Context) {
-	firstName := c.PostForm("firstName")
-	lastName := c.PostForm("lastName")
-	email := c.PostForm("email")
-	password := c.PostForm("password")
+type SignInParam struct {
+	FirstName string
+	LastName  string
+	Email     string
+	Password  string
+}
 
-	if existsUser(email) {
+func PostSignIn(c *gin.Context) {
+	var signInParam SignInParam
+	c.BindJSON(&signInParam)
+
+	if existsUser(signInParam.Email) {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Sign in failed."})
 		return
 	}
@@ -32,12 +37,12 @@ func PostSignIn(c *gin.Context) {
 	}
 
 	userId := user.Model.ID
-	if _, err := model.CreateUserProfile(firstName, lastName, email, userId); err != nil {
+	if _, err := model.CreateUserProfile(signInParam.FirstName, signInParam.LastName, signInParam.Email, userId); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Sign in failed."})
 		return
 	}
 
-	if _, err := model.CreatePasswordAuthentication(password, userId); err != nil {
+	if _, err := model.CreatePasswordAuthentication(signInParam.Password, userId); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Sign in failed."})
 		return
 	}

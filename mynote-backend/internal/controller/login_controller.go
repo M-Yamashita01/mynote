@@ -14,18 +14,23 @@ func ShowLoginPage() func(c *gin.Context) {
 	}
 }
 
-func PostLogin(c *gin.Context) {
-	email := c.PostForm("email")
-	password := c.PostForm("password")
+type LogInParam struct {
+	Email    string
+	Password string
+}
 
-	userProfile, err := model.FindUserProfile(email)
+func PostLogin(c *gin.Context) {
+	var logInParam LogInParam
+	c.BindJSON(&logInParam)
+
+	userProfile, err := model.FindUserProfile(logInParam.Email)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Login failed."})
 		return
 	}
 
 	userId := userProfile.Model.ID
-	if !model.CorrectPassword(password, int(userId)) {
+	if !model.CorrectPassword(logInParam.Password, int(userId)) {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Login failed."})
 		return
 	}

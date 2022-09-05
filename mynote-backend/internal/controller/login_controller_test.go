@@ -1,10 +1,9 @@
 package controller_test
 
 import (
+	"bytes"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	. "github.com/onsi/ginkgo/v2"
@@ -41,15 +40,12 @@ var _ = Describe("LoginController", Ordered, func() {
 		})
 
 		Context("Input correct email and password", func() {
-			form := url.Values{}
-			form.Add("email", "correct@example.com")
-			form.Add("password", "CorrectPassword")
-			body := strings.NewReader(form.Encode())
+			body := bytes.NewBufferString("{\"email\":\"correct@example.com\", \"password\":\"CorrectPassword\"}")
 
 			responseWriter := httptest.NewRecorder()
 			testContext, _ := gin.CreateTestContext(responseWriter)
-			testContext.Request, _ = http.NewRequest("POST", "/login", body)
-			testContext.Request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+			testContext.Request, _ = http.NewRequest("POST", "/api/auth/login", body)
+			testContext.Request.Header.Set("Content-Type", gin.MIMEJSON)
 
 			It("Login successfully", func() {
 				controller.PostLogin(testContext)
@@ -58,15 +54,12 @@ var _ = Describe("LoginController", Ordered, func() {
 		})
 
 		Context("Input incorrect email", func() {
-			form := url.Values{}
-			form.Add("email", "incorrect@example.com")
-			form.Add("password", "CorrectPassword")
-			body := strings.NewReader(form.Encode())
+			body := bytes.NewBufferString("{\"email\":\"incorrect@example.com\", \"password\":\"CorrectPassword\"}")
 
 			responseWriter := httptest.NewRecorder()
 			testContext, _ := gin.CreateTestContext(responseWriter)
-			testContext.Request, _ = http.NewRequest("POST", "/login", body)
-			testContext.Request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+			testContext.Request, _ = http.NewRequest("POST", "/api/auth/login", body)
+			testContext.Request.Header.Set("Content-Type", gin.MIMEJSON)
 
 			It("Login failed", func() {
 				controller.PostLogin(testContext)
@@ -75,15 +68,12 @@ var _ = Describe("LoginController", Ordered, func() {
 		})
 
 		Context("Input incorrect password", func() {
-			form := url.Values{}
-			form.Add("email", "correct@example.com")
-			form.Add("password", "IncorrectPassword")
-			body := strings.NewReader(form.Encode())
+			body := bytes.NewBufferString("{\"email\":\"correct@example.com\", \"password\":\"IncorrectPassword\"}")
 
 			responseWriter := httptest.NewRecorder()
 			testContext, _ := gin.CreateTestContext(responseWriter)
-			testContext.Request, _ = http.NewRequest("POST", "/login", body)
-			testContext.Request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+			testContext.Request, _ = http.NewRequest("POST", "/api/auth/login", body)
+			testContext.Request.Header.Set("Content-Type", gin.MIMEJSON)
 
 			It("Login failed", func() {
 				controller.PostLogin(testContext)
