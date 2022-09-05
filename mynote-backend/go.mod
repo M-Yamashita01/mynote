@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/gin v1.8.1
+	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/onsi/ginkgo/v2 v2.1.4
 	github.com/onsi/gomega v1.20.0
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa

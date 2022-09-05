@@ -34,6 +34,7 @@ func (db *DB) migrate() {
 	db.GormDb.AutoMigrate(&(model.User{}))
 	db.GormDb.AutoMigrate(&(model.UserProfile{}))
 	db.GormDb.AutoMigrate(&(model.PasswordAuthentication{}))
+	db.GormDb.AutoMigrate(&(model.UserToken{}))
 }
 
 func (db *DB) CloseTestDb() {
@@ -47,6 +48,7 @@ func (db *DB) CloseTestDb() {
 
 func (db *DB) TruncateAllTable() {
 	db.GormDb.Exec("SET FOREIGN_KEY_CHECKS = 0;")
+	db.GormDb.Exec("TRUNCATE user_tokens;")
 	db.GormDb.Exec("TRUNCATE user_profiles;")
 	db.GormDb.Exec("TRUNCATE password_authentications;")
 	db.GormDb.Exec("TRUNCATE users;")
