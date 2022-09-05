@@ -70,18 +70,20 @@
 
 <script>
   export default {
-    data: () => ({
-      valid: false,
-      email: '',
-      emailRules: [
-        v => !!v || 'E-mail is required',
-        v => /.+@.+/.test(v) || 'E-mail must be valid',
-      ],
-      password: '',
-      passwordRules: [
-        v => !!v || 'Password is required',
-      ]
-    }),
+    data(){
+      return{
+        valid: true,
+        email: '',
+        emailRules: [
+          v => !!v || 'E-mail is required',
+          v => /.+@.+/.test(v) || 'E-mail must be valid',
+        ],
+        password: '',
+        passwordRules: [
+          v => !!v || 'Password is required',
+        ]
+      }
+    },
     methods: {
       logIn() {
         this.$auth.loginWith('local',{
