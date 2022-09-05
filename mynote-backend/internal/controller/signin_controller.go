@@ -37,7 +37,8 @@ func PostSignIn(c *gin.Context) {
 	}
 
 	userId := user.Model.ID
-	if _, err := model.CreateUserProfile(signInParam.FirstName, signInParam.LastName, signInParam.Email, userId); err != nil {
+	userProfile, err := model.CreateUserProfile(signInParam.FirstName, signInParam.LastName, signInParam.Email, userId)
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Sign in failed."})
 		return
 	}
@@ -47,7 +48,13 @@ func PostSignIn(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Sign in success."})
+	userToken, err := model.CreateUserToken(userProfile)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Sign in failed."})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"token": userToken.Token})
 }
 
 func existsUser(email string) bool {
