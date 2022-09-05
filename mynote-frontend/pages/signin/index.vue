@@ -37,7 +37,7 @@
                 width="300"
               >
                 <v-container>
-                  <v-form v-model="valid" @submit.prevent="SignIn">
+                  <v-form v-model="valid" @submit.prevent="registerUser">
                     <p class="text-center">
                       サインイン
                     </p>
@@ -84,32 +84,42 @@
 
 <script>
   export default {
-    data: () => ({
-      valid: false,
-      firstName: '',
-      lastName: '',
-      nameRules: [
-        v => !!v || 'Name is required',
-      ],
-      email: '',
-      emailRules: [
-        v => !!v || 'E-mail is required',
-        v => /.+@.+/.test(v) || 'E-mail must be valid',
-      ],
-      password: '',
-      passwordRules: [
-        v => !!v || 'Password is required',
-      ]
-    }),
-    methods: {
-      logIn() {
-        this.$auth.loginWith('local',{
-          data: {
-            email: this.email,
-            password: this.password,
-          }
-        })
+    data(){
+      return{
+        valid: false,
+        firstName: '',
+        lastName: '',
+        nameRules: [
+          v => !!v || 'Name is required',
+        ],
+        email: '',
+        emailRules: [
+          v => !!v || 'E-mail is required',
+          v => /.+@.+/.test(v) || 'E-mail must be valid',
+        ],
+        password: '',
+        passwordRules: [
+          v => !!v || 'Password is required',
+        ]
       }
     },
+    methods: {
+      registerUser(){
+        this.$axios.post('/api/auth/signin',
+          {
+            firstName: this.firstName,
+            lastName: this.lastName,
+            email: this.email,
+            password: this.password
+          }).then((response) => {
+            this.$auth.loginWith('local',{
+              data: {
+                email: this.email,
+                password: this.password
+              }}
+            )
+          })
+      },
+    }
   }
 </script>
