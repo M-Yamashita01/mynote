@@ -14,35 +14,47 @@ func ShowSignInPage() func(c *gin.Context) {
 	}
 }
 
-func SignIn(c *gin.Context) {
-	firstName := c.PostForm("firstName")
-	lastName := c.PostForm("lastName")
-	email := c.PostForm("email")
-	password := c.PostForm("password")
+type SignInParam struct {
+	FirstName string
+	LastName  string
+	Email     string
+	Password  string
+}
 
-	if existsUser(email) {
-		c.HTML(http.StatusBadRequest, "signin.html", gin.H{"err": "Already exists user with the email."})
+func PostSignIn(c *gin.Context) {
+	var signInParam SignInParam
+	c.BindJSON(&signInParam)
+
+	if existsUser(signInParam.Email) {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Sign in failed."})
 		return
 	}
 
 	user, err := model.CreateUser()
 	if err != nil {
-		c.HTML(http.StatusInternalServerError, "signin.html", gin.H{"err": "Could not create account."})
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Sign in failed."})
 		return
 	}
 
 	userId := user.Model.ID
-	if _, err := model.CreateUserProfile(firstName, lastName, email, userId); err != nil {
-		c.HTML(http.StatusInternalServerError, "signin.html", gin.H{"err": "Could not create account."})
+	userProfile, err := model.CreateUserProfile(signInParam.FirstName, signInParam.LastName, signInParam.Email, userId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Sign in failed."})
 		return
 	}
 
-	if _, err := model.CreatePasswordAuthentication(password, userId); err != nil {
-		c.HTML(http.StatusInternalServerError, "signin.html", gin.H{"err": "Could not create account."})
+	if _, err := model.CreatePasswordAuthentication(signInParam.Password, userId); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Sign in failed."})
 		return
 	}
 
-	c.Redirect(http.StatusMovedPermanently, "/")
+	userToken, err := model.CreateUserToken(userProfile)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Sign in failed."})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"token": userToken.Token})
 }
 
 func existsUser(email string) bool {

@@ -32,15 +32,29 @@
               <v-sheet
                 color="white"
                 elevation="1"
-                height="300"
+                height="400"
                 rounded
                 width="300"
               >
                 <v-container>
-                  <v-form v-model="valid" @submit.prevent="logIn">
+                  <v-form v-model="valid" @submit.prevent="registerUser">
                     <p class="text-center">
-                      ログイン
+                      サインイン
                     </p>
+
+                    <v-text-field
+                      v-model="firstName"
+                      :rules="nameRules"
+                      label="FirstName"
+                      required
+                    ></v-text-field>
+
+                    <v-text-field
+                      v-model="lastName"
+                      :rules="nameRules"
+                      label="LastName"
+                      required
+                    ></v-text-field>
 
                     <v-text-field
                       v-model="email"
@@ -72,7 +86,12 @@
   export default {
     data(){
       return{
-        valid: true,
+        valid: false,
+        firstName: '',
+        lastName: '',
+        nameRules: [
+          v => !!v || 'Name is required',
+        ],
         email: '',
         emailRules: [
           v => !!v || 'E-mail is required',
@@ -85,14 +104,22 @@
       }
     },
     methods: {
-      logIn() {
-        this.$auth.loginWith('local',{
-          data: {
+      registerUser(){
+        this.$axios.post('/api/auth/signin',
+          {
+            firstName: this.firstName,
+            lastName: this.lastName,
             email: this.email,
-            password: this.password,
-          }
-        })
-      }
-    },
+            password: this.password
+          }).then((response) => {
+            this.$auth.loginWith('local',{
+              data: {
+                email: this.email,
+                password: this.password
+              }}
+            )
+          })
+      },
+    }
   }
 </script>

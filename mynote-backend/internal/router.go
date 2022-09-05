@@ -1,6 +1,9 @@
 package internal
 
 import (
+	"time"
+
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
 	"MyNote/internal/controller"
@@ -9,14 +12,35 @@ import (
 func GetRouter() *gin.Engine {
 	r := gin.Default()
 
+	r.Use(cors.New(cors.Config{
+		AllowOrigins: []string{
+			"http://localhost:3000",
+		},
+		AllowMethods: []string{
+			"POST",
+			"GET",
+		},
+		AllowHeaders: []string{
+			"Access-Control-Allow-Credentials",
+			"Access-Control-Allow-Headers",
+			"Content-Type",
+			"Content-Length",
+			"Accept-Encoding",
+			"Authorization",
+		},
+		AllowCredentials: true,
+		MaxAge:           24 * time.Hour,
+	}))
+
 	r.LoadHTMLGlob("web/*")
 	r.Static("/web", "./web")
 
 	r.GET("/home", controller.ShowHome)
 	r.GET("/signin", controller.ShowSignInPage())
-	r.POST("/signin", controller.SignIn)
+	r.POST("/api/auth/signin", controller.PostSignIn)
 	r.GET("/login", controller.ShowLoginPage())
 	r.POST("/api/auth/login", controller.PostLogin)
+	r.GET("/api/auth/user", controller.GetUser)
 
 	return r
 }
