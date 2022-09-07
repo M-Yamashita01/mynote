@@ -9,6 +9,8 @@ import (
 
 type User struct {
 	ID        uint `gorm:"primary_key;AUTO_INCREMENT;not null;"`
+	Article   Article
+	Category  Category
 	CreatedAt time.Time
 }
 

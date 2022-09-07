@@ -18,4 +18,7 @@ func SetupDb() {
 	db.AutoMigrate(&(model.UserProfile{}))
 	db.AutoMigrate(&(model.PasswordAuthentication{}))
 	db.AutoMigrate(&(model.UserToken{}))
+	db.AutoMigrate(&(model.Article{}))
+	db.AutoMigrate(&(model.Category{}))
+	db.AutoMigrate(&(model.RelationArticleCategory{}))
 }
