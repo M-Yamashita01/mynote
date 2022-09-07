@@ -14,7 +14,7 @@ type UserProfile struct {
 	Email     string `gorm:"not null"`
 	UserId    uint   `gorm:"not null"`
 	User      User
-	CreatedAt time.Time `gorm:"autoCreateTime:milli"`
+	CreatedAt time.Time
 }
 
 func CreateUserProfile(firstName string, lastName string, email string, userId uint) (*UserProfile, error) {
