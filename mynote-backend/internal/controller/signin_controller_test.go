@@ -67,7 +67,7 @@ var _ = Describe("SignInController", Ordered, func() {
 			var passwordAuthentication model.PasswordAuthentication
 			db.GormDb.Last(&passwordAuthentication)
 
-			Expect(passwordAuthentication.Model.ID).NotTo(BeNil())
+			Expect(passwordAuthentication.ID).NotTo(BeNil())
 			Expect(passwordAuthentication.EncryptedPassword).NotTo(BeNil())
 		})
 	})
@@ -77,7 +77,7 @@ var _ = Describe("SignInController", Ordered, func() {
 
 		BeforeEach(func() {
 			user, _ := model.CreateUser()
-			userId := user.Model.ID
+			userId := user.ID
 			model.CreateUserProfile("test_first_name", "test_last_name", "example@example.com", userId)
 
 			body := bytes.NewBufferString(

@@ -2,17 +2,18 @@ package model
 
 import (
 	"log"
-
-	"gorm.io/gorm"
+	"time"
 
 	"MyNote/pkg/crypto"
 	"MyNote/pkg/database"
 )
 
 type PasswordAuthentication struct {
-	gorm.Model
-	EncryptedPassword string
-	UserId            int
+	ID                uint   `gorm:"primary_key;AUTO_INCREMENT;not null;"`
+	EncryptedPassword string `gorm:"not null"`
+	UserId            int    `gorm:"not null"`
+	User              User
+	CreatedAt         time.Time `gorm:"autoCreateTime:milli"`
 }
 
 func CreatePasswordAuthentication(password string, userId uint) (*PasswordAuthentication, error) {
