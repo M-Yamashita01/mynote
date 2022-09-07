@@ -14,7 +14,7 @@ type UserToken struct {
 	Token     string `gorm:"not null"`
 	UserId    uint   `gorm:"not null"`
 	User      User
-	CreatedAt time.Time `gorm:"autoCreateTime:milli"`
+	CreatedAt time.Time
 }
 
 func CreateUserToken(userProfile *UserProfile) (*UserToken, error) {

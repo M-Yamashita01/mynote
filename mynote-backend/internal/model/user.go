@@ -8,8 +8,8 @@ import (
 )
 
 type User struct {
-	ID        uint      `gorm:"primary_key;AUTO_INCREMENT;not null;"`
-	CreatedAt time.Time `gorm:"autoCreateTime:milli"`
+	ID        uint `gorm:"primary_key;AUTO_INCREMENT;not null;"`
+	CreatedAt time.Time
 }
 
 func CreateUser() (*User, error) {

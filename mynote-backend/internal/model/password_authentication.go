@@ -13,7 +13,7 @@ type PasswordAuthentication struct {
 	EncryptedPassword string `gorm:"not null"`
 	UserId            int    `gorm:"not null"`
 	User              User
-	CreatedAt         time.Time `gorm:"autoCreateTime:milli"`
+	CreatedAt         time.Time
 }
 
 func CreatePasswordAuthentication(password string, userId uint) (*PasswordAuthentication, error) {
