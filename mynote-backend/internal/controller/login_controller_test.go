@@ -34,7 +34,7 @@ var _ = Describe("LoginController", Ordered, func() {
 	Describe("PostLogIn", Ordered, func() {
 		BeforeEach(func() {
 			user, _ := model.CreateUser()
-			userId := user.Model.ID
+			userId := user.ID
 			userProfile, _ := model.CreateUserProfile("test_first_name", "test_last_name", "correct@example.com", userId)
 			model.CreatePasswordAuthentication("CorrectPassword", userId)
 			model.CreateUserToken(userProfile)

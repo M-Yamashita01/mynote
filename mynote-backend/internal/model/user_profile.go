@@ -2,18 +2,19 @@ package model
 
 import (
 	"log"
-
-	"gorm.io/gorm"
+	"time"
 
 	"MyNote/pkg/database"
 )
 
 type UserProfile struct {
-	gorm.Model
-	FirstName string
-	LastName  string
-	Email     string
-	UserId    int
+	ID        uint   `gorm:"primary_key;AUTO_INCREMENT;not null;"`
+	FirstName string `gorm:"not null"`
+	LastName  string `gorm:"not null"`
+	Email     string `gorm:"not null"`
+	UserId    uint   `gorm:"not null"`
+	User      User
+	CreatedAt time.Time `gorm:"autoCreateTime:milli"`
 }
 
 func CreateUserProfile(firstName string, lastName string, email string, userId uint) (*UserProfile, error) {
@@ -30,7 +31,7 @@ func CreateUserProfile(firstName string, lastName string, email string, userId u
 		FirstName: firstName,
 		LastName:  lastName,
 		Email:     email,
-		UserId:    int(userId),
+		UserId:    userId,
 	}
 
 	if err := db.Create(&userProfile).Error; err != nil {

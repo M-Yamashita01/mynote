@@ -24,7 +24,7 @@ var _ = Describe("PasswordAuthentication", Ordered, func() {
 
 		BeforeEach(func() {
 			user, _ := model.CreateUser()
-			userId = user.Model.ID
+			userId = user.ID
 			model.CreatePasswordAuthentication("password", userId)
 		})
 
@@ -38,7 +38,7 @@ var _ = Describe("PasswordAuthentication", Ordered, func() {
 
 		BeforeEach(func() {
 			user, _ := model.CreateUser()
-			userId = user.Model.ID
+			userId = user.ID
 			model.CreatePasswordAuthentication("password", userId)
 		})
 

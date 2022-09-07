@@ -2,16 +2,14 @@ package model
 
 import (
 	"log"
-
-	"gorm.io/gorm"
+	"time"
 
 	"MyNote/pkg/database"
 )
 
 type User struct {
-	gorm.Model
-	UserProfile            UserProfile
-	PasswordAuthentication PasswordAuthentication
+	ID        uint      `gorm:"primary_key;AUTO_INCREMENT;not null;"`
+	CreatedAt time.Time `gorm:"autoCreateTime:milli"`
 }
 
 func CreateUser() (*User, error) {

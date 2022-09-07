@@ -29,13 +29,13 @@ func PostLogin(c *gin.Context) {
 		return
 	}
 
-	userId := userProfile.Model.ID
+	userId := userProfile.ID
 	if !model.CorrectPassword(logInParam.Password, int(userId)) {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Login failed."})
 		return
 	}
 
-	userToken, err := model.FindUserToken(int(userId))
+	userToken, err := model.FindUserToken(userId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Login failed."})
 		return
