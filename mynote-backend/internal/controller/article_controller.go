@@ -4,7 +4,6 @@ import (
 	"MyNote/internal/model"
 	"net/http"
 	"strconv"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,21 +14,26 @@ type GetArticlesParam struct {
 }
 
 func GetArticles(c *gin.Context) {
-	header := c.Request.Header
-	bearToken := header["Authorization"]
-	splitBearToken := strings.Split(bearToken[0], " ")
-	token := splitBearToken[1]
-
 	var getArticlesParam GetArticlesParam
 	if c.ShouldBindQuery(&getArticlesParam) != nil || getArticlesParam.SinceId == "" || getArticlesParam.ArticleCount == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "required params that are sinceId and articleCount"})
 		return
 	}
 
-	userId, err := model.FindUserId(token)
+	articles, err := findArticleList(c.Request, getArticlesParam)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to get user"})
+		c.JSON(http.StatusInternalServerError, err.Error())
 		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"articles": articles})
+	return
+}
+
+func findArticleList(request *http.Request, getArticlesParam GetArticlesParam) ([](map[string]string), error) {
+	userId, err := model.FindUserIdFromRequestHeaderToken(request)
+	if err != nil {
+		return nil, err
 	}
 
 	parsedSinceId, _ := strconv.ParseInt(getArticlesParam.SinceId, 10, 32)
@@ -37,11 +41,17 @@ func GetArticles(c *gin.Context) {
 
 	articles, err := model.FindArticlesSinceId(userId, uint(parsedSinceId), int(parsedArticleCount))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "Not found articles"})
-		return
+		return nil, err
 	}
 
+	articleList := createArticleList(articles)
+
+	return articleList, nil
+}
+
+func createArticleList(articles *[]model.Article) [](map[string]string) {
 	articleList := make([](map[string]string), len((*articles)))
+
 	for index, v := range *articles {
 		articleMap := make(map[string]string)
 		articleMap["article_id"] = strconv.FormatUint(uint64(v.ID), 10)
@@ -51,6 +61,5 @@ func GetArticles(c *gin.Context) {
 		articleList[index] = articleMap
 	}
 
-	c.JSON(http.StatusOK, gin.H{"articles": articleList})
-	return
+	return articleList
 }

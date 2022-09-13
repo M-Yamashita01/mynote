@@ -19,7 +19,7 @@ var _ = Describe("Article", Ordered, func() {
 		})
 	})
 
-	Describe("FindArticlesSinceId", Ordered, func() {
+	Describe("FindLatestArticles", Ordered, func() {
 		Context("When an article exist", func() {
 			var userId uint
 
@@ -57,7 +57,7 @@ var _ = Describe("Article", Ordered, func() {
 					Expect(article.Title).To(Equal("TestTitle2"))
 				})
 			})
-			// TODO Write tests for checking limit 10.
+			// TODO Write tests for checking limit 10 over records
 		})
 	})
 })
