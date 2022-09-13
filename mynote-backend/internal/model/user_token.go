@@ -2,7 +2,9 @@ package model
 
 import (
 	"MyNote/pkg/database"
+	myNoteHttp "MyNote/pkg/http"
 	"log"
+	"net/http"
 	"strconv"
 	"time"
 
@@ -69,7 +71,9 @@ func FindUserToken(userId uint) (*UserToken, error) {
 	return &userToken, nil
 }
 
-func FindUserId(token string) (uint, error) {
+func FindUserIdFromRequestHeaderToken(request *http.Request) (uint, error) {
+	token := myNoteHttp.GetBearerTokenFromHeader(request)
+
 	db, err := database.DbInit()
 	if err != nil {
 		log.Println("Failed db connection.")
