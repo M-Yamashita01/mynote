@@ -47,12 +47,16 @@ var _ = Describe("UserController", Ordered, func() {
 
 			body, _ := ioutil.ReadAll(responseWriter.Body)
 
-			var token struct {
+			type Token struct {
 				Token string `json:"token"`
 			}
 
-			json.Unmarshal([]byte(body), &token)
-			Expect(userToken.Token).To(Equal(token.Token))
+			var responseUser struct {
+				User Token `json:"user"`
+			}
+
+			json.Unmarshal([]byte(body), &responseUser)
+			Expect(userToken.Token).To(Equal(responseUser.User.Token))
 		})
 	})
 })
