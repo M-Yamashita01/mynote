@@ -20,5 +20,8 @@ func GetUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": userToken.Token})
+	userMap := make((map[string]string), 1)
+	userMap["token"] = userToken.Token
+
+	c.JSON(http.StatusOK, gin.H{"user": userMap})
 }

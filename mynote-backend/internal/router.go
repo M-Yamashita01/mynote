@@ -41,7 +41,7 @@ func GetRouter() *gin.Engine {
 	r.GET("/login", controller.ShowLoginPage())
 	r.POST("/api/auth/login", controller.PostLogin)
 	r.GET("/api/auth/user", controller.GetUser)
-	r.GET("/api/articles/", controller.GetArticles)
+	r.GET("/api/articles", controller.GetArticles)
 
 	return r
 }
