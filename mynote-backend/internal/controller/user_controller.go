@@ -14,5 +14,11 @@ func GetUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"user": userId})
+	userToken, err := model.FindUserToken(userId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to get user"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"token": userToken.Token})
 }
