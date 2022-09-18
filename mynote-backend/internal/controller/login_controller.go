@@ -8,12 +8,6 @@ import (
 	"MyNote/internal/model"
 )
 
-func ShowLoginPage() func(c *gin.Context) {
-	return func(c *gin.Context) {
-		c.HTML(200, "login.html", nil)
-	}
-}
-
 type LogInParam struct {
 	Email    string
 	Password string

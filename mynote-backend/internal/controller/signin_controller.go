@@ -8,12 +8,6 @@ import (
 	"MyNote/internal/model"
 )
 
-func ShowSignInPage() func(c *gin.Context) {
-	return func(c *gin.Context) {
-		c.HTML(200, "signin.html", nil)
-	}
-}
-
 type SignInParam struct {
 	FirstName string
 	LastName  string
