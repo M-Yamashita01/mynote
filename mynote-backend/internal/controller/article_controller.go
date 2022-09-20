@@ -2,6 +2,9 @@ package controller
 
 import (
 	"MyNote/internal/model"
+	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
 	"strconv"
 
@@ -11,6 +14,10 @@ import (
 type GetArticlesParam struct {
 	SinceId      string `form:"since_id"`
 	ArticleCount string `form:"article_count"`
+}
+
+type PostArticleParam struct {
+	ArticleURL string `json:"article_url"`
 }
 
 func GetArticles(c *gin.Context) {
@@ -27,6 +34,58 @@ func GetArticles(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"articles": articles})
+	return
+}
+
+type CustomSearchResult struct {
+	Title string `form:"title"`
+}
+
+type CustomSearchResponseBody struct {
+	Items []CustomSearchResult `form:"items"`
+}
+
+func PostArticle(c *gin.Context) {
+	userId, err := model.FindUserIdFromRequestHeaderToken(c.Request)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to get user"})
+		return
+	}
+
+	var postArticleParam PostArticleParam
+	c.BindJSON(&postArticleParam)
+
+	apiKey := ""
+	cx := ""
+	customSearchUrl := fmt.Sprintf("https://www.googleapis.com/customsearch/v1?key=%s&cx=%s&q=%s", apiKey, cx, postArticleParam.ArticleURL)
+
+	req, err := http.NewRequest(http.MethodGet, customSearchUrl, nil)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid URL. err: " + err.Error()})
+		return
+	}
+
+	client := new(http.Client)
+	resp, err := client.Do(req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Error Request. err: " + err.Error()})
+		return
+	}
+
+	defer resp.Body.Close()
+	if resp.StatusCode != 200 {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Error Response. StatusCode: " + fmt.Sprint(resp.StatusCode) + "\nerr: " + err.Error()})
+		return
+	}
+
+	body, _ := io.ReadAll(resp.Body)
+	var customSearchResponseBody CustomSearchResponseBody
+	json.Unmarshal(body, &customSearchResponseBody)
+
+	title := customSearchResponseBody.Items[0].Title
+	model.CreateArticle(title, postArticleParam.ArticleURL, "", userId)
+
+	c.JSON(http.StatusOK, gin.H{"message": "Post article successfully."})
 	return
 }
 
