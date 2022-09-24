@@ -2,9 +2,6 @@ package controller
 
 import (
 	"MyNote/internal/model"
-	"encoding/json"
-	"fmt"
-	"io"
 	"net/http"
 	"strconv"
 
@@ -37,12 +34,22 @@ func GetArticles(c *gin.Context) {
 	return
 }
 
-type CustomSearchResult struct {
-	Title string `form:"title"`
+type Metatags struct {
+	SiteName string `json:"site_name"`
+	Title    string `json:"og:title"`
+}
+
+type PageMap struct {
+	Metatags []Metatags `json:"metatags"`
+}
+
+type Items struct {
+	Title   string  `json:"title"`
+	PageMap PageMap `json:"pagemap"`
 }
 
 type CustomSearchResponseBody struct {
-	Items []CustomSearchResult `form:"items"`
+	Items []Items `json:"items"`
 }
 
 func PostArticle(c *gin.Context) {
@@ -55,35 +62,10 @@ func PostArticle(c *gin.Context) {
 	var postArticleParam PostArticleParam
 	c.BindJSON(&postArticleParam)
 
-	apiKey := ""
-	cx := ""
-	customSearchUrl := fmt.Sprintf("https://www.googleapis.com/customsearch/v1?key=%s&cx=%s&q=%s", apiKey, cx, postArticleParam.ArticleURL)
-
-	req, err := http.NewRequest(http.MethodGet, customSearchUrl, nil)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid URL. err: " + err.Error()})
+	if err := model.RegisterArticleFromUrl(postArticleParam.ArticleURL, userId); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to register article. err: " + err.Error()})
 		return
 	}
-
-	client := new(http.Client)
-	resp, err := client.Do(req)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Error Request. err: " + err.Error()})
-		return
-	}
-
-	defer resp.Body.Close()
-	if resp.StatusCode != 200 {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Error Response. StatusCode: " + fmt.Sprint(resp.StatusCode) + "\nerr: " + err.Error()})
-		return
-	}
-
-	body, _ := io.ReadAll(resp.Body)
-	var customSearchResponseBody CustomSearchResponseBody
-	json.Unmarshal(body, &customSearchResponseBody)
-
-	title := customSearchResponseBody.Items[0].Title
-	model.CreateArticle(title, postArticleParam.ArticleURL, "", userId)
 
 	c.JSON(http.StatusOK, gin.H{"message": "Post article successfully."})
 	return
