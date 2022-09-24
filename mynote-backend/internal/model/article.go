@@ -1,6 +1,7 @@
 package model
 
 import (
+	"MyNote/pkg/api/google"
 	"MyNote/pkg/database"
 	"log"
 	"time"
@@ -58,4 +59,19 @@ func FindArticlesSinceId(userId uint, sinceId uint, articleCount int) (*[]Articl
 	}
 
 	return &articles, nil
+}
+
+func RegisterArticleFromUrl(articleUrl string, userId uint) error {
+	article, err := google.GetArticleSearchRequest(articleUrl)
+	if err != nil {
+		log.Printf("[ERROR] Failed to GetArticleSearchRequest. err: %s", err.Error())
+		return err
+	}
+
+	if _, err := CreateArticle(article.Title, articleUrl, article.SiteName, userId); err != nil {
+		log.Printf("[ERROR] Failed to CreateArticle. err: %s", err.Error())
+		return err
+	}
+
+	return nil
 }

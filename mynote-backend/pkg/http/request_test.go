@@ -33,4 +33,24 @@ var _ = Describe("Request", Ordered, func() {
 			Expect(token).To(Equal("tokenexample"))
 		})
 	})
+
+	Describe("GetRequest", Ordered, func() {
+		Context("Pass correct url", func() {
+			url := "https://example.com"
+			It("Get response body successfully", func() {
+				client := new(http.Client)
+				_, err := myNoteHttp.GetRequest(client, url)
+				Expect(err).To(BeNil())
+			})
+		})
+
+		Context("Pass incorrect url", func() {
+			url := "https://example_test.com"
+			It("Get err", func() {
+				client := new(http.Client)
+				_, err := myNoteHttp.GetRequest(client, url)
+				Expect(err).NotTo(BeNil())
+			})
+		})
+	})
 })
