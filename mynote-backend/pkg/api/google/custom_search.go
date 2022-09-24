@@ -1,6 +1,9 @@
 package google
 
 import (
+	myNoteHttp "MyNote/pkg/http"
+	myNoteOs "MyNote/pkg/os"
+
 	"encoding/json"
 	"fmt"
 	"io"
@@ -32,36 +35,25 @@ type CustomSearchResponseBody struct {
 }
 
 func GetArticleSearchRequest(articleUrl string) (*Article, error) {
-	// apiKey := myNoteOs.GetEnv("API_KEY", "apiKey")
-	// cx := myNoteOs.GetEnv("CX", "cx")
-	// customSearchUrl := fmt.Sprintf("https://www.googleapis.com/customsearch/v1?key=%s&cx=%s&q=%s", apiKey, cx, articleUrl)
-	customSearchUrl := "https://www.googleapis.com/customsearch/v1"
+	apiKey := myNoteOs.GetEnv("API_KEY", "apiKey")
+	cx := myNoteOs.GetEnv("CX", "cx")
+	customSearchUrl := fmt.Sprintf("https://www.googleapis.com/customsearch/v1?key=%s&cx=%s&q=%s", apiKey, cx, articleUrl)
 
-	fmt.Println("1")
-	req, err := http.NewRequest(http.MethodGet, customSearchUrl, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	client := new(http.Client)
-	fmt.Println("2")
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	fmt.Println("3")
+	resp, err := myNoteHttp.GetRequest(new(http.Client), customSearchUrl)
 	defer resp.Body.Close()
-	fmt.Printf("resp: %v\n", resp)
 	if resp.StatusCode != 200 {
 		return nil, err
 	}
-	fmt.Println("4")
 
 	body, _ := io.ReadAll(resp.Body)
 	var customSearchResponseBody CustomSearchResponseBody
 	json.Unmarshal(body, &customSearchResponseBody)
 
+	article := createArticle(&customSearchResponseBody)
+	return article, nil
+}
+
+func createArticle(customSearchResponseBody *CustomSearchResponseBody) *Article {
 	article := Article{
 		Title:    "",
 		SiteName: "None",
@@ -80,5 +72,5 @@ func GetArticleSearchRequest(articleUrl string) (*Article, error) {
 		}
 	}
 
-	return &article, nil
+	return &article
 }
