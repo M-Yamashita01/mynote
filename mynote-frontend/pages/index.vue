@@ -10,12 +10,14 @@
         <v-text-field
           label="https://xxx..."
           hide-details="false"
+          v-model="inputArticleUrl"
           v-if="expand"
         ></v-text-field>
         <v-btn
           depressed
           color="teal"
           v-if="expand"
+          @click="registerArticle"
         >
           登録
         </v-btn>
@@ -96,7 +98,9 @@ export default {
         ['mdi-format-list-bulleted', 'マイリスト'],
       ],
       articles: [],
-      expand: false
+      expand: false,
+      inputArticleUrl: '',
+      failed: false,
     }
   },
   created: function () {
@@ -117,6 +121,34 @@ export default {
     click: function() {
       this.expand == true ? this.expand = false : this.expand = true
     },
+    registerArticle() {
+      this.$axios.post('/api/article', {
+        article_url: this.inputArticleUrl
+      },
+      {
+        "Authorization": this.$auth.getToken('local')
+      },).then((response) => {
+        this.$axios.get('/api/articles', {
+          headers: {
+            "Authorization": this.$auth.getToken('local')
+          },
+          params: { since_id: 0, article_count: 3 } 
+            }).then((response) => {
+              var responseData = response.data
+              var articles = responseData.articles
+              this.articles = articles
+            })
+            .catch(e => {
+              alert("Failed to get article.")
+            })
+        })
+        .catch(e => {
+          alert("Failed to register article.")
+        })
+
+      this.expand = false
+      this.inputArticleUrl = ''
+    }
   },
 }
 </script>
