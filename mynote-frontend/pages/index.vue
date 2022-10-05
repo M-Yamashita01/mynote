@@ -134,8 +134,7 @@ export default {
           params: { since_id: 0, article_count: 3 } 
             }).then((response) => {
               var responseData = response.data
-              var articles = responseData.articles
-              this.articles = articles
+              this.articles = responseData.articles
             })
             .catch(e => {
               alert("Failed to get article.")
