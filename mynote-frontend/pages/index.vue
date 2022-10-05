@@ -99,8 +99,7 @@ export default {
       ],
       articles: [],
       expand: false,
-      inputArticleUrl: '',
-      failed: false,
+      inputArticleUrl: ''
     }
   },
   created: function () {
