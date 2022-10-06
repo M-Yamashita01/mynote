@@ -16,6 +16,8 @@ services:
     - MYSQL_DATABASE=mynote_db
     - MYSQL_ROOT_PASSWORD=password
     - MYSQL_HOST=db
+    - API_KEY=${API_KEY}
+    - CX=${CX}
     ports:
       - 8080:8080
     depends_on:
