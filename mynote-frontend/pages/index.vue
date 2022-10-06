@@ -16,7 +16,7 @@
               <v-list>
                 <v-list-item
                   v-for="[icon, text] in links"
-                  :key="icon"
+                  :key="`icon-${text}`"
                   link
                 >
                   <v-list-item-icon>
@@ -38,7 +38,7 @@
               </v-col>
 
               <v-col cols="4"
-                v-for="article in articles" :key="article"
+                v-for="article, index in articles" :key="`article-${index}`"
               >
                 <v-card height="200" v-bind:href=article.url target="_blank">
                   <v-img
@@ -72,8 +72,8 @@ export default {
   data: () => {
     return {
       links: [
-        ['mdi-home', 'HOME'],
-        ['mdi-format-list-bulleted', 'マイリスト'],
+        ["mdi-home", "HOME"],
+        ["mdi-format-list-bulleted", "マイリスト"],
       ],
       articles: []
     }
