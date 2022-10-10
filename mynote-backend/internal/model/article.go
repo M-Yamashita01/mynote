@@ -17,7 +17,7 @@ type Article struct {
 }
 
 func CreateArticle(title string, url string, webSiteName string, userId uint) (*Article, error) {
-	db, err := database.DbInit()
+	db, err := database.ConnectDb()
 	if err != nil {
 		log.Println("Failed db connection.")
 		log.Println(err)
@@ -43,7 +43,7 @@ func CreateArticle(title string, url string, webSiteName string, userId uint) (*
 }
 
 func FindArticlesSinceId(userId uint, sinceId uint, articleCount int) (*[]Article, error) {
-	db, err := database.DbInit()
+	db, err := database.ConnectDb()
 	if err != nil {
 		log.Println("Failed db connection.")
 		log.Println(err)

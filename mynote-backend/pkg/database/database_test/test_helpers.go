@@ -23,7 +23,7 @@ func ConnectTestDb() *DB {
 	os.Setenv("MYSQL_ROOT_PASSWORD", "password")
 	os.Setenv("MYSQL_DATABASE", db.testDb)
 
-	db.GormDb, _ = database.DbInit()
+	db.GormDb, _ = database.ConnectDb()
 
 	db.migrate()
 

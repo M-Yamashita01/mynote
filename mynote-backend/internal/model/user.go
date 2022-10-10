@@ -15,7 +15,7 @@ type User struct {
 }
 
 func CreateUser() (*User, error) {
-	db, err := database.DbInit()
+	db, err := database.ConnectDb()
 	if err != nil {
 		log.Println("Failed db connection.")
 		log.Println(err)

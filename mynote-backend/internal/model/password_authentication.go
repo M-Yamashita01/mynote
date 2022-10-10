@@ -17,7 +17,7 @@ type PasswordAuthentication struct {
 }
 
 func CreatePasswordAuthentication(password string, userId uint) (*PasswordAuthentication, error) {
-	db, err := database.DbInit()
+	db, err := database.ConnectDb()
 	if err != nil {
 		log.Println("Failed db connection.")
 		log.Println(err)
@@ -42,7 +42,7 @@ func CreatePasswordAuthentication(password string, userId uint) (*PasswordAuthen
 }
 
 func CorrectPassword(password string, userId int) bool {
-	db, err := database.DbInit()
+	db, err := database.ConnectDb()
 	if err != nil {
 		log.Println("Failed db connection.")
 		log.Println(err)
