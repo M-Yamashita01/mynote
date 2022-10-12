@@ -1,5 +1,5 @@
-# Executable files
-mynote
+tmp
+vendor
 
-tmp/
-vendor/
+# Built deliverables
+mynote

@@ -3,13 +3,17 @@ package controller_test
 import (
 	"MyNote/internal/controller"
 	"MyNote/internal/model"
+	"MyNote/pkg/api/google"
 	"MyNote/pkg/database/database_test"
+	"bytes"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"regexp"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jarcoal/httpmock"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -124,5 +128,61 @@ var _ = Describe("ArticleController", Ordered, func() {
 			})
 		})
 
+	})
+
+	Describe("PostArticle", func() {
+		Context("When post correct article's url", func() {
+			var userId uint
+			var testContext *gin.Context
+			var responseWriter *httptest.ResponseRecorder
+			var strCustomSearchResponseBody string
+
+			BeforeEach(func() {
+				body := bytes.NewBufferString(
+					"{\"article_url\":\"https://example.com/\"}",
+				)
+
+				user, _ := model.CreateUser()
+				userId = user.ID
+				userProfile, _ := model.CreateUserProfile("test", "last", "example@example.com", userId)
+				userToken, _ := model.CreateUserToken(userProfile)
+
+				responseWriter = httptest.NewRecorder()
+				testContext, _ = gin.CreateTestContext(responseWriter)
+				testContext.Request, _ = http.NewRequest("POST", "http://localhost:8080/api/article", body)
+				testContext.Request.Header.Set("Authorization", "Bearer "+userToken.Token)
+				testContext.Request.Header.Set("Content-Type", gin.MIMEJSON)
+
+				customSearchResponseBody := &google.CustomSearchResponseBody{
+					Items: []google.Items{
+						{
+							Title: "item title",
+							PageMap: google.PageMap{
+								Metatags: []google.Metatags{
+									{
+										Title:    "metatag title",
+										SiteName: "site name",
+									},
+								},
+							},
+						},
+					},
+				}
+				jsonCustomSearchResponseBody, _ := json.Marshal(&customSearchResponseBody)
+				strCustomSearchResponseBody = string(jsonCustomSearchResponseBody)
+			})
+
+			It("Get articles successfully", func() {
+				httpmock.Activate()
+				defer httpmock.DeactivateAndReset()
+
+				r := regexp.MustCompile(`(?m)https://www.googleapis.com/customsearch/v1([a-zA-Z0-9:\/_\=\-\+\&\?\.]{1,})$`)
+				httpmock.RegisterRegexpResponder("GET", r,
+					httpmock.NewStringResponder(http.StatusOK, strCustomSearchResponseBody))
+
+				controller.PostArticle(testContext)
+				Expect(testContext.Writer.Status()).To(Equal(http.StatusOK))
+			})
+		})
 	})
 })

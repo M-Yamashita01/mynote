@@ -1,11 +1,33 @@
 <template>
   <v-app id="inspire">
     <v-app-bar app>
-      <v-toolbar-title>MyNote</v-toolbar-title>
-      <div class="flex-grow-1"></div>
-
-      <v-icon>mdi-plus</v-icon>
-      <v-icon>mdi-magnify</v-icon>
+      <v-container class="py-0 fill-height">
+        <v-toolbar-title>MyNote</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-btn icon v-if="!expand" @click="click">
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
+        <v-text-field
+          label="https://xxx..."
+          hide-details="false"
+          v-model="inputArticleUrl"
+          v-if="expand"
+        ></v-text-field>
+        <v-btn
+          depressed
+          color="teal"
+          v-if="expand"
+          @click="registerArticle"
+        >
+          登録
+        </v-btn>
+        <v-btn icon v-if="expand" @click="click">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+        <v-btn icon>
+          <v-icon>mdi-magnify</v-icon>
+        </v-btn>
+      </v-container>
     </v-app-bar>
 
     <v-main>
@@ -75,11 +97,13 @@ export default {
         ["mdi-home", "HOME"],
         ["mdi-format-list-bulleted", "マイリスト"],
       ],
-      articles: []
+      articles: [],
+      expand: false,
+      inputArticleUrl: ''
     }
   },
   created: function () {
-    console.log(this.$auth.getToken('local'))
+    this.expand = false
 
     this.$axios.get('/api/articles', {
       headers: {
@@ -91,6 +115,38 @@ export default {
             var articles = responseData.articles
             this.articles = articles
           })
-  }
+  },
+  methods:{
+    click: function() {
+      this.expand == true ? this.expand = false : this.expand = true
+    },
+    registerArticle() {
+      this.$axios.post('/api/article', {
+        article_url: this.inputArticleUrl
+      },
+      {
+        "Authorization": this.$auth.getToken('local')
+      },).then((response) => {
+        this.$axios.get('/api/articles', {
+          headers: {
+            "Authorization": this.$auth.getToken('local')
+          },
+          params: { since_id: 0, article_count: 3 } 
+            }).then((response) => {
+              var responseData = response.data
+              this.articles = responseData.articles
+            })
+            .catch(e => {
+              alert("Failed to get article.")
+            })
+        })
+        .catch(e => {
+          alert("Failed to register article.")
+        })
+
+      this.expand = false
+      this.inputArticleUrl = ''
+    }
+  },
 }
 </script>

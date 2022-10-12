@@ -5,10 +5,10 @@
       <v-toolbar-title>MyNote</v-toolbar-title>
       <div class="flex-grow-1"></div>
 
-      <v-btn to="/login"
+      <v-btn to="/signin"
         text
       >
-        ログイン
+        サインイン
       </v-btn>
     </v-app-bar>
 
@@ -56,7 +56,7 @@
                       required
                     ></v-text-field>
 
-                    <v-btn block color="primary" type="submit">登録</v-btn>
+                    <v-btn block color="primary" type="submit">ログイン</v-btn>
                   </v-form>
                 </v-container>
               </v-sheet>
@@ -84,6 +84,7 @@
         ]
       }
     },
+    auth: false,
     methods: {
       logIn() {
         this.$auth.loginWith('local',{
