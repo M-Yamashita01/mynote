@@ -8,7 +8,7 @@ import (
 )
 
 func SetupDb() {
-	db, err := database.DbInit()
+	db, err := database.ConnectDb()
 	if err != nil {
 		log.Println(err)
 		return

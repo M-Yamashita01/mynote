@@ -20,7 +20,7 @@ type UserToken struct {
 }
 
 func CreateUserToken(userProfile *UserProfile) (*UserToken, error) {
-	db, err := database.DbInit()
+	db, err := database.ConnectDb()
 	if err != nil {
 		log.Println("Failed db connection.")
 		log.Println(err)
@@ -54,7 +54,7 @@ func CreateUserToken(userProfile *UserProfile) (*UserToken, error) {
 }
 
 func FindUserToken(userId uint) (*UserToken, error) {
-	db, err := database.DbInit()
+	db, err := database.ConnectDb()
 	if err != nil {
 		log.Println("Failed db connection.")
 		log.Println(err)
@@ -74,7 +74,7 @@ func FindUserToken(userId uint) (*UserToken, error) {
 func FindUserIdFromRequestHeaderToken(request *http.Request) (uint, error) {
 	token := myNoteHttp.GetBearerTokenFromHeader(request)
 
-	db, err := database.DbInit()
+	db, err := database.ConnectDb()
 	if err != nil {
 		log.Println("Failed db connection.")
 		log.Println(err)

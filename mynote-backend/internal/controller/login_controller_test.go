@@ -27,10 +27,6 @@ var _ = Describe("LoginController", Ordered, func() {
 		})
 	})
 
-	It("Show LogInPage successfully", func() {
-		controller.ShowLoginPage()
-	})
-
 	Describe("PostLogIn", Ordered, func() {
 		BeforeEach(func() {
 			user, _ := model.CreateUser()

@@ -18,7 +18,7 @@ type UserProfile struct {
 }
 
 func CreateUserProfile(firstName string, lastName string, email string, userId uint) (*UserProfile, error) {
-	db, err := database.DbInit()
+	db, err := database.ConnectDb()
 	if err != nil {
 		log.Println("Failed db connection.")
 		log.Println(err)
@@ -44,7 +44,7 @@ func CreateUserProfile(firstName string, lastName string, email string, userId u
 }
 
 func ExistUserWithEmail(email string) bool {
-	db, err := database.DbInit()
+	db, err := database.ConnectDb()
 	if err != nil {
 		log.Println("Failed db connection.")
 		log.Println(err)
@@ -59,7 +59,7 @@ func ExistUserWithEmail(email string) bool {
 }
 
 func FindUserProfile(email string) (*UserProfile, error) {
-	db, err := database.DbInit()
+	db, err := database.ConnectDb()
 	if err != nil {
 		log.Println("Failed db connection.")
 		log.Println(err)

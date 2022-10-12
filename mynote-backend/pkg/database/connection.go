@@ -10,7 +10,7 @@ import (
 	myNoteOs "MyNote/pkg/os"
 )
 
-func DbInit() (*gorm.DB, error) {
+func ConnectDb() (*gorm.DB, error) {
 	password := myNoteOs.GetEnv("MYSQL_ROOT_PASSWORD", "password")
 	mysqlDb := myNoteOs.GetEnv("MYSQL_DATABASE", "mynote_db")
 	host := myNoteOs.GetEnv("MYSQL_HOST", "127.0.0.1")
