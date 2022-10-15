@@ -103,7 +103,7 @@
         ]
       }
     },
-    auth: false,
+    // auth: false,
     methods: {
       registerUser(){
         this.$axios.post('/api/auth/signin',
