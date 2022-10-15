@@ -84,7 +84,7 @@
         ]
       }
     },
-    auth: false,
+    // auth: false,
     methods: {
       logIn() {
         this.$auth.loginWith('local',{
