@@ -32,9 +32,6 @@ func GetRouter() *gin.Engine {
 		MaxAge:           24 * time.Hour,
 	}))
 
-	r.LoadHTMLGlob("web/*")
-	r.Static("/web", "./web")
-
 	r.POST("/api/auth/signin", controller.PostSignIn)
 	r.POST("/api/auth/login", controller.PostLogin)
 	r.GET("/api/auth/user", controller.GetUser)
