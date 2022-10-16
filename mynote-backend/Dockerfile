@@ -9,11 +9,8 @@ RUN go install github.com/cosmtrek/air@latest
 
 RUN go mod download
 
-# COPY ./ ./
-
-# RUN go build -o /mynote /app/cmd/mynote/main.go
+RUN go mod vendor
 
 EXPOSE 8080
 
-# CMD [ "/mynote" ]
 CMD ["air", "-c", ".air.toml"]
