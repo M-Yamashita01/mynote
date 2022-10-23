@@ -8,16 +8,17 @@
             <v-sheet rounded="lg">
               <v-list>
                 <v-list-item
-                  v-for="[icon, text] in links"
-                  :key="`icon-${text}`"
+                  v-for="link in links"
+                  :key="`icon-${link.name}`"
+                  :to="link.path"
                   link
                 >
                   <v-list-item-icon>
-                    <v-icon>{{ icon }}</v-icon>
+                    <v-icon>{{ link.icon }}</v-icon>
                   </v-list-item-icon>
 
                   <v-list-item-content>
-                    <v-list-item-title>{{ text }}</v-list-item-title>
+                    <v-list-item-title>{{ link.name }}</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </v-list>
@@ -65,8 +66,8 @@ export default {
   data: () => {
     return {
       links: [
-        ["mdi-home", "HOME"],
-        ["mdi-format-list-bulleted", "マイリスト"],
+        { icon: "mdi-home", name: "HOME", path: "/" },
+        { icon: "mdi-format-list-bulleted", name: "マイリスト", path: "/mylist" },
       ],
       articles: [],
       expand: false,
