@@ -69,26 +69,22 @@ export default {
         { icon: "mdi-format-list-bulleted", name: "マイリスト", path: "/mylist" },
       ],
       articles: [],
-      expand: false,
-      inputArticleUrl: ''
     }
   },
-  methods: {
-    getArticles() {
+  created: function() {
     this.$axios.get('/api/articles', {
-      headers: {
-        "Authorization": this.$auth.getToken('local')
-      },
-      params: { since_id: 0, article_count: 12 } 
-        }).then((response) => {
-          var responseData = response.data
-          this.articles = responseData.articles
-        })
-        .catch(e => {
-          alert("Failed to get article.");
-          console.log("Failed to get article. err: " + err);
-        })
-    }
+        headers: {
+          "Authorization": this.$auth.getToken('local')
+        },
+        params: { since_id: 0, article_count: 12 } 
+      }
+    ).then((response) => {
+      var responseData = response.data
+      this.articles = responseData.articles
+    })
+    .catch(e => {
+      console.log("Failed to get article. err: " + err);
+    })
   }
 }
 </script>
