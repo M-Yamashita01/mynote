@@ -4,26 +4,7 @@
     <v-main>
       <v-container>
         <v-row>
-          <v-col cols="3">
-            <v-sheet rounded="lg">
-              <v-list>
-                <v-list-item
-                  v-for="[icon, text] in links"
-                  :key="`icon-${text}`"
-                  link
-                >
-                  <v-list-item-icon>
-                    <v-icon>{{ icon }}</v-icon>
-                  </v-list-item-icon>
-
-                  <v-list-item-content>
-                    <v-list-item-title>{{ text }}</v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list>
-            </v-sheet>
-          </v-col>
-
+          <LeftMenu />
           <v-col cols="9">
             <v-row>
               <v-col cols="12">
