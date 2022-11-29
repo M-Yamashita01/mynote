@@ -4,11 +4,31 @@
     <v-main>
       <v-container>
         <v-row>
-          <LeftMenu />
+          <v-col cols="3">
+            <v-sheet rounded="lg">
+              <v-list>
+                <v-list-item
+                  v-for="link in links"
+                  :key="`icon-${link.name}`"
+                  :to="link.path"
+                  link
+                >
+                  <v-list-item-icon>
+                    <v-icon>{{ link.icon }}</v-icon>
+                  </v-list-item-icon>
+
+                  <v-list-item-content>
+                    <v-list-item-title>{{ link.name }}</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+            </v-sheet>
+          </v-col>
+
           <v-col cols="9">
             <v-row>
               <v-col cols="12">
-                <strong>最近登録したコンテンツ</strong>
+                <strong>マイリスト</strong>
               </v-col>
 
               <v-col cols="4"
@@ -37,7 +57,6 @@
   </v-app>
 </template>
 
-
 <script>
 import Vue from 'vue'
 const axios = require('axios')
@@ -50,44 +69,22 @@ export default {
         { icon: "mdi-format-list-bulleted", name: "マイリスト", path: "/mylist" },
       ],
       articles: [],
-      expand: false,
-      inputArticleUrl: ''
     }
   },
-  created: function () {
-    this.expand = false
-  },
-  methods:{
-    click: function() {
-      this.expand == true ? this.expand = false : this.expand = true
-    },
-    registerArticle() {
-      this.$axios.post('/api/article', {
-        article_url: this.inputArticleUrl
-      },
-      {
-        "Authorization": this.$auth.getToken('local')
-      },).then((response) => {
-        this.$axios.get('/api/articles', {
-          headers: {
-            "Authorization": this.$auth.getToken('local')
-          },
-          params: { since_id: 0, article_count: 3 } 
-            }).then((response) => {
-              var responseData = response.data
-              this.articles = responseData.articles
-            })
-            .catch(e => {
-              alert("Failed to get article.")
-            })
-        })
-        .catch(e => {
-          alert("Failed to register article.")
-        })
-
-      this.expand = false
-      this.inputArticleUrl = ''
-    }
-  },
+  created: function() {
+    this.$axios.get('/api/articles', {
+        headers: {
+          "Authorization": this.$auth.getToken('local')
+        },
+        params: { since_id: 0, article_count: 12 } 
+      }
+    ).then((response) => {
+      var responseData = response.data
+      this.articles = responseData.articles
+    })
+    .catch(e => {
+      console.log("Failed to get article. err: " + err);
+    })
+  }
 }
 </script>
