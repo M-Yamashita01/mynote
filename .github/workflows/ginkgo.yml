@@ -31,5 +31,5 @@ jobs:
         echo "MYSQL_ROOT_PASSWORD=password" >> $GITHUB_ENV
         echo "MYSQL_DATABASE=mynote_test_db" >> $GITHUB_ENV
     - name: Run test
-      run: ginkgo -r --randomize-all --randomize-suites
+      run: ginkgo -r --ginkgo.randomize-all 
       working-directory: ./mynote-backend/
